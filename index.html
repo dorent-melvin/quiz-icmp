@@ -210,7 +210,7 @@
             </div>
         </div>
 
-        <button id="submit-btn" onclick="checkAnswers()">Quiz Abschicken</button>
+        <button id="submit-btn" onclick="checkAnswers()" disabled>Quiz Abschicken</button>
     </div>
 
     <!-- Start-Button -->
@@ -244,8 +244,22 @@
             document.getElementById('quiz-container').style.display = 'block';
             document.getElementById('liquidButton').style.display = 'none';
         }
+	    
+	function allQuestionsAnswered() {
+	    var allAnswered = true;
+	    for (var i = 1; i <= 7; i++) {
+	        if (!document.querySelector('input[name="q' + i + '"]:checked')) {
+	            allAnswered = false;
+	            break;
+	        }
+	    }
+	    document.getElementById('submit-btn').disabled = !allAnswered;
+	}
 
         function checkAnswers() {
+	    if (!allQuestionsAnswered()) {
+	        return; // Verhindert das Überprüfen der Antworten, wenn nicht alle Fragen beantwortet sind
+	    }
             var correctAnswers = ['B', 'B', 'B', 'B', 'B', 'C', 'B'];
             var userAnswers = [];
 
@@ -291,6 +305,14 @@
 
             $('#result-container').modal('show');
         }
+
+	document.addEventListener('DOMContentLoaded', (event) => {
+	    document.getElementById('submit-btn').disabled = true;
+	    var allOptions = document.querySelectorAll('input[type=radio]');
+	    allOptions.forEach(function(option) {
+	        option.addEventListener('change', allQuestionsAnswered);
+	    });
+	});
 
         $(function() {
         // Vars
